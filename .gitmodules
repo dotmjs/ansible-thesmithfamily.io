@@ -1,0 +1,7 @@
+[submodule "roles/mjsxio.systemd-networkd"]
+	path = roles/mjsxio.systemd-networkd
+	url = git@github.com:mjsxio/mjsxio.systemd-networkd.git
+
+[submodule "roles/mjsxio.centos7_libvirt_host"]
+	path = roles/mjsxio.centos7_libvirt_host
+	url = git@github.com:mjsxio/mjsxio.centos7_libvirt_host.git

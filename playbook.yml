@@ -1,0 +1,7 @@
+---
+#- hosts: nuc_servers
+- hosts: nuc_servers
+  roles:
+  - mjsxio.systemd-networkd
+  - mjsxio.centos7_libvirt_host
+#  - mjsxio.centos7_gluster_host

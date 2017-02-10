@@ -1,0 +1,134 @@
+---
+#### START HACKJOB 1 ####
+- hosts: [bootstrap_libvirt]
+  tasks:
+    - name: Install yum versionlock to workaround broken gluster libs
+      yum: name=yum-plugin-versionlock state=latest
+
+    - name: Lock gluster libs at 3.8.4
+      command: yum versionlock glusterfs-client-xlators-3.8.4-1.el7  glusterfs-3.8.4-1.el7 glusterfs-api-3.8.4-1.el7 glusterfs-fuse-3.8.4-1.el7 glusterfs-libs-3.8.4-1.el7 glusterfs-server-3.8.4-1.el7 glusterfs-cli-3.8.4-1.el7 
+
+    - name: Update kernel to latest version
+      yum: name="kernel" state=latest
+      notify: reboot server
+
+    - name: Update all packages to latest
+      yum: name="*" state=latest
+  handlers:
+    - name: reboot server
+      shell: sleep 2 && shutdown -r now Ansible triggered reboot
+      async: 1
+      poll: 0
+      ignore_errors: true
+      changed_when: true
+      notify: wait for reboot
+      
+    - name: wait for reboot
+      delegate_to: localhost
+      wait_for: host="{{ hostvars[inventory_hostname]["ansible_host"] | default(inventory_hostname) }}" port=22 state=started delay=10 timeout=300
+      become: false
+#### END HACKJOB 1 ####
+
+- hosts: [bootstrap_libvirt]
+  roles:
+  - mjsxio.centos7_libvirt_host
+  - mjsxio.centos7_gluster_host
+
+#### START HACKJOB 2 ####
+- hosts: bootstrap_libvirt
+  tasks:
+    - command: yum downgrade -y glusterfs*3.8.4-1.el7
+    - command: systemctl daemon-reload
+    - command: systemctl restart glusterd
+    
+#### END HACKJOB 2 ####      
+- hosts: [bootstrap_libvirt]
+  tasks:
+    - name: Create brick mount root
+      file: state=directory recurse=yes path="/bricks/{{ item.name }}" owner=root group=root mode=0755
+      with_items: "{{ gluster_volumes }}"
+
+    - name: Create a partiion filling the device
+      command: parted --script {{ item.device }} mklabel gpt \ mkpart primary xfs 1MiB 100%
+      args:
+        creates: "{{ item.device }}1"
+      with_items: "{{ gluster_volumes }}"
+
+    - name: Format disk for gluster
+      filesystem: dev="{{ item.device }}1" fstype=xfs opts="-i size=512" force=no
+      with_items: "{{ gluster_volumes }}"
+
+    - name: Mount brick devices
+      mount: name=/bricks/{{ item.name }} src="{{ item.device }}1" fstype=xfs state=mounted
+      with_items: "{{ gluster_volumes }}"
+
+    - name: Create brick subdirectory
+      file: state=directory recurse=no path="/bricks/{{ item.name }}/brick" owner=root group=root mode=0755
+      with_items: "{{ gluster_volumes }}"
+
+    - name: Allow insecure (>1024) RPC ports
+      lineinfile:
+        dest: /etc/glusterfs/glusterd.vol
+        regexp: ^.*option rpc-auth-allow-insecure.*$
+        line: "    option rpc-auth-allow-insecure on"
+        insertafter: ^.*type mgmt/glusterd$
+      notify: restart gluster
+
+    - name: Create gluster volume
+      gluster_volume:
+        state: present
+        name: "{{ item.name }}"
+        bricks: "/bricks/{{ item.name }}/brick"
+        options:
+          server.allow-insecure: "on"
+          storage.owner-uid: "107"
+          storage.owner-gid: "107"
+          performance.quick-read: "off"
+          performance.read-ahead: "off"
+          performance.io-cache: "off"
+          performance.stat-prefetch: "off"
+          cluster.eager-lock: "enable"
+          network.remote-dio: "enable"
+          cluster.quorum-type: "auto"
+          cluster.server-quorum-type: "server"
+      with_items: "{{ gluster_volumes }}"
+      notify: restart libvirt
+
+    - name: Create gluster mountpoints
+      file: state=directory recurse=yes path="/gluster/{{ item.name }}" owner=root group=root mode=0755
+      with_items: "{{ gluster_volumes }}"
+
+    - name: Mount gluster volumes
+      mount: name=/gluster/{{ item.name }} src="localhost:{{ item.name }}" fstype=glusterfs state=mounted opts="defaults,_netdev"
+      with_items: "{{ gluster_volumes }}"
+
+  handlers:
+    - name: restart gluster
+      service: name=glusterd state=restarted
+
+    - name: restart libvirt
+      service: name=libvirtd state=restarted
+
+- hosts: [bootstrap_ipa]
+  gather_facts: no
+  roles:
+    - mjsxio.centos7_libvirt_guest
+    - mjsxio.centos7_ipa_server
+
+##
+#   tasks:
+# - hosts: libvirt-0.{{ ipadomain }}
+#   tasks:
+#     - name: Create libvirt_gvol
+#
+# - hosts: ipa-0.{{ ipadomain }}, satellite-0.{{ ipadomain }}
+#   roles:
+#     - mjsxio.centos7_libvirt_guest
+#
+# - hosts: ipa-0.{{ ipadomain }}
+#   roles:
+#     - mjsxio.centos7_freeipa_server
+#
+# - hosts: katello-0.{{ ipadomain }}
+#   roles:
+#     - mjsxio.centos7_katello_server
