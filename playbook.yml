@@ -4,4 +4,9 @@
   roles:
   - mjsxio.systemd-networkd
   - mjsxio.centos7_libvirt_host
-#  - mjsxio.centos7_gluster_host
+  - mjsxio.lvm
+  - mjsxio.centos7_gluster_host
+
+  post_tasks:
+  - name: Update all packages to latest
+    package: name="*" state=latest

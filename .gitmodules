@@ -8,3 +8,6 @@
 [submodule "roles/mjsxio.centos7_gluster_host"]
 	path = roles/mjsxio.centos7_gluster_host
 	url = git@github.com:mjsxio/mjsxio.centos7_gluster_host.git
+[submodule "roles/mjsxio.lvm"]
+	path = roles/mjsxio.lvm
+	url = git@github.com:mjsxio/mjsxio.lvm.git
