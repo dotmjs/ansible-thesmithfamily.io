@@ -10,3 +10,7 @@
   post_tasks:
   - name: Update all packages to latest
     package: name="*" state=latest
+
+- hosts: ipa_servers
+  roles:
+  - mjsxio.centos7_libvirt_guest

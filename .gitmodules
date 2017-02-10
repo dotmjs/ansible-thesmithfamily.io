@@ -11,3 +11,6 @@
 [submodule "roles/mjsxio.lvm"]
 	path = roles/mjsxio.lvm
 	url = git@github.com:mjsxio/mjsxio.lvm.git
+[submodule "roles/mjsxio.centos7_libvirt_guest"]
+	path = roles/mjsxio.centos7_libvirt_guest
+	url = git@github.com:mjsxio/mjsxio.centos7_libvirt_guest.git
