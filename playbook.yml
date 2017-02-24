@@ -1,5 +1,4 @@
 ---
-#- hosts: nuc_servers
 - hosts: nuc_servers
   roles:
   - mjsxio.systemd-networkd
@@ -11,7 +10,10 @@
   - name: Update all packages to latest
     package: name="*" state=latest
 
-- hosts: ipa_servers
-  gather_facts: false
-  # roles:
-  # - mjsxio.centos7_libvirt_guest
+#- hosts: ipa_servers
+#  roles:
+#  - mjsxio.centos7_libvirt_guest
+
+- hosts: nuc_servers
+  roles:
+  - mjsxio.centos7_ipa_client

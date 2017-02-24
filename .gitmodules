@@ -14,3 +14,6 @@
 [submodule "roles/mjsxio.centos7_libvirt_guest"]
 	path = roles/mjsxio.centos7_libvirt_guest
 	url = git@github.com:mjsxio/mjsxio.centos7_libvirt_guest.git
+[submodule "roles/mjsxio.centos7_ipa_client"]
+	path = roles/mjsxio.centos7_ipa_client
+	url = git@github.com:mjsxio/mjsxio.centos7_ipa_client.git
