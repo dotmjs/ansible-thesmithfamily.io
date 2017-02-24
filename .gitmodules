@@ -17,3 +17,6 @@
 [submodule "roles/mjsxio.centos7_ipa_client"]
 	path = roles/mjsxio.centos7_ipa_client
 	url = git@github.com:mjsxio/mjsxio.centos7_ipa_client.git
+[submodule "roles/mjsxio.centos7_ipa_server"]
+	path = roles/mjsxio.centos7_ipa_server
+	url = git@github.com:mjsxio/mjsxio.centos7_ipa_server.git

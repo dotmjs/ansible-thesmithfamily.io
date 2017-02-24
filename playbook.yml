@@ -4,15 +4,17 @@
   - mjsxio.systemd-networkd
   - mjsxio.centos7_libvirt_host
   - mjsxio.lvm
-  - mjsxio.centos7_gluster_host
+#  - mjsxio.centos7_gluster_host
 
   post_tasks:
   - name: Update all packages to latest
     package: name="*" state=latest
 
-#- hosts: ipa_servers
-#  roles:
+- hosts: ipa_servers
+  roles:
 #  - mjsxio.centos7_libvirt_guest
+  - mjsxio.centos7_ipa_client
+  - mjsxio.centos7_ipa_server
 
 - hosts: nuc_servers
   roles:
