@@ -12,5 +12,6 @@
     package: name="*" state=latest
 
 - hosts: ipa_servers
-  roles:
-  - mjsxio.centos7_libvirt_guest
+  gather_facts: false
+  # roles:
+  # - mjsxio.centos7_libvirt_guest
