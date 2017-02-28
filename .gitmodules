@@ -20,3 +20,6 @@
 [submodule "roles/mjsxio.centos7_ipa_server"]
 	path = roles/mjsxio.centos7_ipa_server
 	url = git@github.com:mjsxio/mjsxio.centos7_ipa_server.git
+[submodule "roles/mjsxio.centos7_katello_server"]
+	path = roles/mjsxio.centos7_katello_server
+	url = git@github.com:mjsxio/mjsxio.centos7_katello_server.git

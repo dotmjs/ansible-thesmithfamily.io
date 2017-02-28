@@ -1,10 +1,17 @@
 ---
+- hosts: libvirt_servers
+  roles:
+  - mjsxio.systemd-networkd
+  - mjsxio.centos7_libvirt_host
+  post_tasks:
+  - name: Update all packages to latest
+    package: name="*" state=latest
+
 - hosts: nuc_servers
   roles:
   - mjsxio.systemd-networkd
   - mjsxio.centos7_libvirt_host
   - mjsxio.lvm
-#  - mjsxio.centos7_gluster_host
 
   post_tasks:
   - name: Update all packages to latest
@@ -19,3 +26,7 @@
 - hosts: nuc_servers
   roles:
   - mjsxio.centos7_ipa_client
+
+- hosts: katello_servers
+  roles:
+  - mjsxio.centos7_katello_server

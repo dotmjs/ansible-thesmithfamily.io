@@ -1,0 +1,18 @@
+- name: Install katello prereqs
+  package: name="{{ item }}" state=latest
+  with_items:
+  - http://fedorapeople.org/groups/katello/releases/yum/3.3/katello/el7/x86_64/katello-repos-latest.rpm
+  - http://yum.theforeman.org/releases/1.14/el7/x86_64/foreman-release.rpm
+  - https://yum.puppetlabs.com/puppetlabs-release-pc1-el-7.noarch.rpm
+  - https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+
+- name: Install foreman-release-scl
+  package: name="{{ item }}" state=latest
+  with_items:
+  - foreman-release-scl
+
+- name: Update all packages
+  package: name="*" state=latest
+
+- name: Install katello package
+  package: name=katello state=latest
