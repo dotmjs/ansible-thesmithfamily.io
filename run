@@ -4,6 +4,6 @@ PB=playbook.yml
 
 if [ -e "$1" ]; then PB=$1; fi
 
-time ( ansible-playbook -vvvv -i inventory $PB )
+time ( ansible-playbook -i inventory $PB )
 
 rm -f *.retry

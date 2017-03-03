@@ -23,3 +23,6 @@
 [submodule "roles/mjsxio.centos7_katello_server"]
 	path = roles/mjsxio.centos7_katello_server
 	url = git@github.com:mjsxio/mjsxio.centos7_katello_server.git
+[submodule "roles/mjsxio.centos7_katello_client"]
+	path = roles/mjsxio.centos7_katello_client
+	url = git@github.com:mjsxio/mjsxio.centos7_katello_client.git
