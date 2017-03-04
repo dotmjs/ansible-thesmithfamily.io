@@ -31,6 +31,6 @@
   roles:
   - mjsxio.centos7_katello_server
 
-- hosts: nuc_servers, libvirt_servers
+- hosts: nuc_servers, libvirt_servers, ipa_servers
   roles:
   - mjsxio.centos7_katello_client
