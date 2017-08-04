@@ -1,36 +1,10 @@
 ---
-- hosts: libvirt_servers
-  roles:
-  - mjsxio.systemd-networkd
-  - mjsxio.centos7_libvirt_host
-  post_tasks:
-  - name: Update all packages to latest
-    package: name="*" state=latest
+# - hosts: libvirt_hosts
+#   roles:
+#   - mjsxio.el7_baseline
+#   - mjsxio.el7_libvirt_host
 
-- hosts: nuc_servers
+- hosts: libvirt_guests
+  gather_facts: no
   roles:
-  - mjsxio.systemd-networkd
-  - mjsxio.centos7_libvirt_host
-  - mjsxio.lvm
-
-  post_tasks:
-  - name: Update all packages to latest
-    package: name="*" state=latest
-
-- hosts: ipa_servers
-  roles:
-#  - mjsxio.centos7_libvirt_guest
-  - mjsxio.centos7_ipa_client
-  - mjsxio.centos7_ipa_server
-
-- hosts: nuc_servers
-  roles:
-  - mjsxio.centos7_ipa_client
-
-- hosts: katello_servers
-  roles:
-  - mjsxio.centos7_katello_server
-
-- hosts: nuc_servers, libvirt_servers, ipa_servers
-  roles:
-  - mjsxio.centos7_katello_client
+  - mjsxio.el7_libvirt_guest
